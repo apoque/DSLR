@@ -4,9 +4,20 @@ import sys
 def load():
     try:
         data = np.genfromtxt(sys.argv[1], delimiter = ',')
+        data_str = np.genfromtxt(sys.argv[1], delimiter = ',', dtype = np.str)
     except:
         print("Error. Programm abort.")
         exit()
+    best_hand = np.where(data_str == "Best Hand")[1]
+    data_str[np.where(data_str == "Left")[0], best_hand] = 1
+    data_str[np.where(data_str == "Right")[0], best_hand] = 2
+    data[1:, best_hand] = data_str[1:, best_hand]
+    birthday = np.where(data_str == "Birthday")[1]
+    for i in range(1, len(data_str)):
+        nb_bday = data_str[i, birthday]
+        data[i, birthday] = int(nb_bday[0][:4]) + \
+                            (int(nb_bday[0][5:7]) / 120 * 10) + \
+                            (int(nb_bday[0][8:9]) / 3100 * 10)
     return data
 
 def ft_percentile(array, percent):

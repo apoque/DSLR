@@ -1,4 +1,4 @@
-#Answer is Arithmancy and Care of Magical Creatures
+#Answer is Astronomy and Defense Against the Dark Arts
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ def get_data():
         data = np.genfromtxt(sys.argv[1], delimiter = ',')
         data_str = np.genfromtxt(sys.argv[1], delimiter = ',', dtype = np.str)
     except:
-        print("Error. Program abort.")
+        print("Error.Program abort.")
         exit()
     best_hand = np.where(data_str == "Best Hand")[1]
     data_str[np.where(data_str == "Left")[0], best_hand] = 1
@@ -21,7 +21,6 @@ def get_data():
         data[i, birthday] = int(nb_bday[0][:4]) + \
                             (int(nb_bday[0][5:7]) / 120 * 10) + \
                             (int(nb_bday[0][8:9]) / 3100 * 10)
-
     return data, data_str
 
 def get_col(data, data_str, column):
@@ -38,19 +37,23 @@ def get_col(data, data_str, column):
             gfd = np.append(gfd, data[k, column])
         elif data_str[k, 1] == "Hufflepuff":
             hfpf = np.append(hfpf, data[k, column])
-    rvc = np.extract(np.isnan(rvc) == False, rvc)
-    slr = np.extract(np.isnan(slr) == False, slr)
-    gfd = np.extract(np.isnan(gfd) == False, gfd)
-    hfpf = np.extract(np.isnan(hfpf) == False, hfpf)
     return rvc, slr, gfd, hfpf
 
 def main():
     data, data_str = get_data()
+    colors = ['r', 'b', 'g', 'y']
     for i in range(4, data.shape[1]):
-        plt.hist(get_col(data, data_str, i), bins = 15)
-        plt.title(data_str[0, i])
-        plt.legend(["Ravenclaw", "Slytherin", "Gryffindor", "Hufflepuff"],fontsize = "small")
-        plt.show()
+        for j in range(i + 1, data.shape[1]):
+            for k in range (0, 4):
+                plt.scatter(get_col(data, data_str, i)[k], \
+                        get_col(data, data_str, j)[k], c = colors[k], \
+                        edgecolors = "none", alpha = 0.8)
+                plt.xlabel(data_str[0, i])
+                plt.ylabel(data_str[0, j])
+                plt.legend(["Ravenclaw", "Slytherin", "Gryffindor", "Hufflepuff"], \
+                        fontsize = "small")
+            plt.show()
 
 if __name__ == "__main__":
     main()
+
